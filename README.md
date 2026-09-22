@@ -1,4 +1,4 @@
-# unitree go2 ros2 - champ config
+# unitree go2 ros2 - champ config (Fork)
 
 > This package contains the configuration files for the Unitree Go2 robot configured with the CHAMP controller in ROS 2 (humble). It includes development of config package along with upgrade in robot description model for ROS 2 Humble distribution.
 
