@@ -91,6 +91,49 @@
         </collision>
     </link>
 
+        <!-- Front RGB camera -->
+    <joint name="camera_joint" type="fixed">
+        <parent link="trunk"/>
+        <child link="camera_link"/>
+        <!-- Front of the robot, approximately at head/camera height -->
+        <origin xyz="0.32 0 0.04" rpy="0 0.0 0"/>
+    </joint>
+
+    <link name="camera_link">
+        <inertial>
+            <mass value="0.001"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <inertia
+                ixx="0.0001" ixy="0" ixz="0"
+                iyy="0.0001" iyz="0"
+                izz="0.0001"/>
+        </inertial>
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.03 0.03 0.03"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.03 0.03 0.03"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="camera_optical_joint" type="fixed">
+        <parent link="camera_link"/>
+        <child link="camera_optical_frame"/>
+        <origin
+            xyz="0 0 0"
+            py="-1.57079632679 0 -1.57079632679"/>
+    </joint>
+
+    <link name="camera_optical_frame"/>
+
     <!--
     <joint name="load_joint" type="fixed">
         <parent link="trunk"/>
