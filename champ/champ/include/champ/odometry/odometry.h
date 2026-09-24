@@ -91,62 +91,54 @@ namespace champ
             }
 
             void getVelocities(champ::Velocities &vel, Time now = champ::Odometry::now())
-            {      
-                //if all legs are on the ground, nothing to calculate
-                //or if no legs are on the ground, probably the robot is upside-down
-                if(allFeetInContact() || noFootInContact())
+            {
+                double dt = (now - prev_time_) / 1000000.0;
+                if (dt <= 0.0) dt = 0.02;
+
+                // считаем только ноги, которые были в контакте и в прошлом, и сейчас
+                unsigned int n = 0;
+                float x_sum = 0, y_sum = 0, theta_sum = 0;
+
+                for (unsigned int i = 0; i < 4; i++)
                 {
-                    vel.linear.x = 0.0;
-                    vel.linear.y = 0.0;
-                    vel.angular.z = 0.0;
+                    geometry::Transformation cur = base_->legs[i]->foot_from_base();
+                    bool contact = base_->legs[i]->in_contact();
 
-                    prev_vel_.linear.x = 0.0;
-                    prev_vel_.linear.y = 0.0;
-                    prev_vel_.angular.z = 0.0;
+                    float dx = prev_foot_position_[i].X() - cur.X();
+                    float dy = prev_foot_position_[i].Y() - cur.Y();
+                    float cur_theta = atan2f(cur.X(), cur.Y());
+                    float dth = cur_theta - prev_theta_[i];
 
+                    if (contact && prev_foot_contacts_[i])
+                    {
+                        n++;
+                        x_sum += dx;
+                        y_sum += dy;
+                        theta_sum += dth;
+                    }
+
+                    prev_foot_position_[i] = cur;
+                    prev_foot_contacts_[i] = contact;
+                    prev_theta_[i] = cur_theta;
+                }
+
+                prev_time_ = now;
+
+                if (n == 0)   // нет надёжной опоры: держим прошлое значение
+                {
+                    vel = prev_vel_;
                     return;
                 }
 
-                unsigned int total_contact = 0;
-                float x_sum = 0;
-                float y_sum = 0;
-                float theta_sum = 0;
+                float sc = base_->gait_config.odom_scaler;
+                float vx = (x_sum / n) * sc / dt;
+                float vy = (y_sum / n) * sc / dt;
+                float wz = (theta_sum / n) / dt;
 
-                for(unsigned int i = 0; i < 4; i++)
-                {
-                    geometry::Transformation current_foot_position = base_->legs[i]->foot_from_base();
-                    
-                    bool foot_in_contact = base_->legs[i]->in_contact();
-                    
-                    float delta_x = (prev_foot_position_[i].X() - current_foot_position.X());
-                    float delta_y = (prev_foot_position_[i].Y() - current_foot_position.Y());
-                    
-                    float current_theta = atan2f(current_foot_position.X(), current_foot_position.Y());
-                    float delta_theta = (current_theta - prev_theta_[i]);
-
-                    if(foot_in_contact)
-                    {
-                        total_contact += 1;
-                        theta_sum += delta_theta;
-                        x_sum += delta_x / 2.0;
-                        y_sum += delta_y / 2.0;
-                    }
-                        
-                    prev_foot_position_[i] = current_foot_position;
-                    prev_foot_contacts_[i] = foot_in_contact;
-                    prev_theta_[i] = current_theta;
-                }
-
-                double dt = (now - prev_time_) / 1000000.0;
-                // zero division check
-                if (dt == 0)
-                    dt = 0.02;
-                vel.linear.x =  ((1 - beta_) * ((x_sum * base_->gait_config.odom_scaler) / dt)) + (beta_ * prev_vel_.linear.x);
-                vel.linear.y =  ((1 - beta_) * ((y_sum * base_->gait_config.odom_scaler) / dt)) + (beta_ * prev_vel_.linear.y);
-                vel.angular.z = ((1- beta_ ) * (theta_sum / dt)) + (beta_ * prev_vel_.angular.z);
-                
+                vel.linear.x  = (1 - beta_) * vx + beta_ * prev_vel_.linear.x;
+                vel.linear.y  = (1 - beta_) * vy + beta_ * prev_vel_.linear.y;
+                vel.angular.z = (1 - beta_) * wz + beta_ * prev_vel_.angular.z;
                 prev_vel_ = vel;
-                prev_time_ = now;
             }
     };
 }

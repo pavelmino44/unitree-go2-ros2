@@ -34,8 +34,12 @@ def generate_launch_description():
     gait_config = os.path.join(config_pkg_share, "config/gait/gait.yaml")
     links_config = os.path.join(config_pkg_share, "config/links/links.yaml")
     default_model_path = os.path.join(descr_pkg_share, "xacro/robot_VLP.xacro")
-    default_world_path = os.path.join(config_pkg_share, "worlds/default.world")
+
+    # default_world_path = os.path.join(config_pkg_share, "worlds/default.world")
+
     arena_world_path = os.path.join(config_pkg_share, "worlds/arena.world")
+
+    # arena_full_world_path = os.path.join(config_pkg_share, "worlds/arena_full.world")
 
     declare_use_sim_time = DeclareLaunchArgument(
         "use_sim_time",
@@ -56,9 +60,18 @@ def generate_launch_description():
         default_value=ros_control_config,
         description="Ros control config path",
     )
+
+    # declare_gazebo_world = DeclareLaunchArgument(
+    #     "world", default_value=default_world_path, description="Gazebo world name"
+    # )
+
     declare_gazebo_world = DeclareLaunchArgument(
         "world", default_value=arena_world_path, description="Gazebo world name"
     )
+
+    # declare_gazebo_world = DeclareLaunchArgument(
+    #     "world", default_value=arena_full_world_path, description="Gazebo world name"
+    # )
 
     declare_gui = DeclareLaunchArgument(
         "gui", default_value="true", description="Use gui"
