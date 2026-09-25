@@ -1,0 +1,20 @@
+material Arena/Floor
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.6 0.6 0.6 1
+      diffuse 0.9 0.9 0.9 1
+      specular 0.05 0.05 0.05 1
+
+      texture_unit
+      {
+        max_anisotropy 16
+        filtering anisotropic
+        texture arena_floor.png
+        tex_address_mode wrap
+      }
+    }
+  }
+}
