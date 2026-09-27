@@ -5,7 +5,7 @@
 ## Unitree Go2:
 <div style="display: flex; gap: 50px;">
   <img src="https://oss-global-cdn.unitree.com/static/c487f93e06954100a44fac4442b94d94_288x238.png" width="250" />
-  <img src=".docs/gazebo_launch.png" width="350" /> 
+  <img src="docs/.img/gazebo_launch.png" width="350" /> 
 </div>
 
 > Unitree Robotics is focusing on the R&D, production, and sales of consumer and industry-class high-performance general-purpose legged and humanoid robots, six-axis manipulators, and so on. We attaches great importance to independent research and development and technological innovation, fully self-researching key core robot components such as motors, reducers, controllers, LIDAR and high-performance perception and motion control algorithms, integrating the entire robotics industry chain.
@@ -37,8 +37,8 @@
 - &check; Working Gazebo with teleoperated robot.
 - &check; Adding IMU and 2D LiDAR.
 - &check; Adding 3D LiDAR (Velodyne).
-- &cross; Working Gazebo demo with SLAM.
-- &cross; Working Gazebo demo with nav2 integration.
+- &check; Working Gazebo demo with SLAM (starts with item 2.6).
+- &check; Working Gazebo demo with nav2 integration (starts with item 2.6).
 
 ## 1. Installation
 
@@ -69,9 +69,9 @@ rosdep install --from-paths src --ignore-src -r -y
 
 ### 1.2 Build your workspace:
 ```bash
-cd <your_ws>
+cd ~/go2_sim_ws
 colcon build
-. <your_ws>/install/setup.bash
+source ~/go2_sim_ws/install/setup.bash
 ```
 ## 2. Quick Start
 
@@ -81,25 +81,24 @@ You don't need a physical robot to run the following demos. Make sure you have r
 ```bash
 ros2 launch go2_config gazebo.launch.py
 ```
-![Go2 Gazebo Launch](.docs/gazebo_launch.png)
+![Go2 Gazebo Launch](docs/.img/gazebo_launch.png)
 
 ### 2.2 Walking demo in RVIZ: Run the gazebo along with rviz
 ```bash
 ros2 launch go2_config gazebo.launch.py rviz:=true
 ```
-![Go2 Gazebo RViz Launch](.docs/gazebo_rviz_launch.png)
+![Go2 Gazebo RViz Launch](docs/.img/gazebo_rviz_launch.png)
 
 ### 2.3 Run the teleop node:
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
-https://github.com/user-attachments/assets/bcfeec70-12c5-49b8-b7a7-da4fa9b6dea5
 
 ### 2.4 Go2 Velodyne Config Gazebo demo: Run the Gazebo environment
 ```bash
 ros2 launch go2_config gazebo_velodyne.launch.py 
 ```
-![Go2 Velodyne Gazebo Launch](.docs/gazebo_velodyne_launch.png)
+![Go2 Velodyne Gazebo Launch](docs/.img/gazebo_velodyne_launch.png)
 
 ### 2.5 Go2 Veldyne Config Walking/PointCloud demo in RVIZ: Run the gazebo along with rviz
 ```bash
@@ -108,7 +107,7 @@ ros2 launch go2_config gazebo_velodyne.launch.py rviz:=true
 
 > Note: set point cloud topic to `/velodyne_points`
 
-![Go2 Velodyne Gazebo RViz Launch](.docs/gazebo_velodyne_rviz_launch.png)
+![Go2 Velodyne Gazebo RViz Launch](docs/.img/gazebo_velodyne_rviz_launch.png)
 
 ### 2.6 Go2 Hokoyu 2D LiDAR Config Gazbeo demo: Run the Gazebo environment
 
@@ -122,6 +121,8 @@ To Run the gazebo along with rviz
 ```bash
 ros2 launch go2_config gazebo_velodyne.launch.py rviz:=true
 ```
+
+To run the Navigation Stack, check: [Instructions for Launching the Navigation Stack](docs/Navigation_Stack_Launch.md)
 
 ## 3. Tuning gait parameters
 
